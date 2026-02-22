@@ -13,7 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { SearchBar } from '../../components/SearchBar';
 import { BookCard } from '../../components/BookCard';
-import { googleBooksApi } from '../services/api/googleBooks'
+import { googleBooksApi } from '../services/api/googleBooks';
 import { Book } from '../services/api/types';
 import Colors from '../../constants/Colors';
 
@@ -81,7 +81,11 @@ export default function SearchScreen() {
   };
 
   const handleBookPress = (book: Book) => {
-    router.push(`/book/${book.id}`);
+    console.log('Navigating to book:', book.id, book.title);
+    router.push({
+      pathname: '/book/[id]',
+      params: { id: book.id }
+    });
   };
 
   const renderCategoryItem = ({ item }: { item: typeof CATEGORIES[0] }) => (

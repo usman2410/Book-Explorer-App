@@ -13,33 +13,49 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { googleBooksApi } from '../services/api/googleBooks'
+import { googleBooksApi } from '../services/api/googleBooks';
 import { Book } from '../services/api/types';
 import Colors from '../../constants/Colors';
 
 const { width } = Dimensions.get('window');
 
 export default function BookDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const params = useLocalSearchParams();
+  const id = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : '';
   const router = useRouter();
+  
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadBookDetails();
+    console.log('BookDetailScreen mounted with params:', params);
+    console.log('Extracted ID:', id);
+    if (id) {
+      loadBookDetails();
+    } else {
+      setError('No book ID provided');
+      setLoading(false);
+    }
   }, [id]);
 
   const loadBookDetails = async () => {
-    if (!id) return;
+    if (!id) {
+      setError('Invalid book ID');
+      setLoading(false);
+      return;
+    }
     
+    console.log('Loading book details for ID:', id);
     setLoading(true);
     setError(null);
     
     try {
       const bookData = await googleBooksApi.getBookById(id);
+      console.log('Book data loaded:', bookData.title);
       setBook(bookData);
     } catch (err) {
+      console.error('Error loading book:', err);
       setError(err instanceof Error ? err.message : 'Failed to load book details');
     } finally {
       setLoading(false);

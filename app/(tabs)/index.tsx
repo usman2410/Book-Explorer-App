@@ -12,7 +12,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SearchBar } from '../../components/SearchBar';
 import { BookCard } from '../../components/BookCard';
-import { googleBooksApi } from '../services/api/googleBooks'
+import { googleBooksApi } from '../services/api/googleBooks';
 import { Book } from '../services/api/types';
 import Colors from '../../constants/Colors';
 
@@ -24,12 +24,10 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load trending books on mount
   useEffect(() => {
     loadTrendingBooks();
   }, []);
 
-  // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery.trim().length > 2) {
@@ -94,8 +92,12 @@ export default function HomeScreen() {
   };
 
   const handleBookPress = (book: Book) => {
-    router.push(`/book/${book.id}`);
-  };
+  console.log('Navigating to:', book.id);
+  router.push({
+  pathname: "/book/[id]",
+  params: { id: book.id }
+});
+};
 
   const renderEmptyState = () => {
     if (loading) {
@@ -135,7 +137,7 @@ export default function HomeScreen() {
       <StatusBar style="dark" />
       
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Search Book</Text>
+        <Text style={styles.headerTitle}>Search Books</Text>
       </View>
 
       <SearchBar
