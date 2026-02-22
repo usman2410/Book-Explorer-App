@@ -25,12 +25,10 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load trending books on mount
   useEffect(() => {
     loadTrendingBooks();
   }, []);
 
-  // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery.trim().length > 2) {
